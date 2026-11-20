@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0D0D0F">
+  <meta name="description" content="Yohan Ahmad builds interactive websites and practical web tools. Explore the Oxygen Salon and Trailmind case studies and more selected work.">
+  <meta property="og:title" content="Yohan Ahmad | Portfolio">
+  <meta property="og:description" content="Interactive websites, practical web tools, and selected case studies by Yohan Ahmad.">
+  <meta property="og:image" content="https://indigo-personal-portfolio.notyohan.chatgpt.site/assets/developer-card.png">
+  <title>Yohan Ahmad | Portfolio</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="content.js" defer></script>
+  <script src="portfolio.js" defer></script>
+  <script src="hero-card.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#top"><img src="assets/mark.svg" width="35" height="35" alt=""><span data-name>Yohan Ahmad</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#certificates">Certifications</a>
+        <a class="nav-contact" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="portfolio-main" id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="intro-title">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <h1 id="intro-title">Hi, I’m <span data-name>Yohan Ahmad</span></h1>
+          <p class="hero-description" data-intro>I’m a computer science student specializing in AI and machine learning. I build interactive websites and browser-based tools.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">Explore my work</a>
+            <a class="button button-outline" href="#contact">Contact</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="developer-scene" aria-hidden="true">
+            <div class="developer-stage">
+              <div class="developer-window">
+                <div class="developer-titlebar"><span></span><span></span><span></span></div>
+                <pre class="developer-code"><code><span class="code-keyword">const</span> <span class="code-name">developer</span> = {
+  name: <span class="code-value">'Yohan Ahmad'</span>,
+  passion: <span class="code-value">'Building things'</span>,
+  focus: [<span class="code-value">'Web'</span>, <span class="code-value">'AI'</span>],
+  mindset: <span class="code-value">'Keep creating'</span>
+};
+
+<span class="code-name">developer</span>.createSomethingGreat();</code></pre>
+              </div>
+              <p class="developer-note">✦ Ideas → Experiences</p>
+            </div>
+          </div>
+          <button class="motion-toggle" type="button" hidden>Pause motion</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about-section" id="about" aria-labelledby="about-title">
+      <div class="shell about-grid">
+        <div class="section-head about-copy">
+          <p class="eyebrow">Introduction</p>
+          <h2 id="about-title">About me<span>.</span></h2>
+          <p class="section-description">Hi! I’m Yohan Ahmad, a first-year undergraduate student pursuing a Bachelor of Technology (B.Tech) in Computer Science and Engineering (Artificial Intelligence and Machine Learning) at Chandigarh University (Unnao Campus), from 2026 to 2030.</p>
+          <p class="section-description">Beyond my core engineering coursework, I am deeply passionate about bridging technology and creative strategy. I actively explore web development, crafting functional and modern digital solutions, alongside a strong interest in marketing and freewriting. Whether I am building web applications, designing user-focused digital experiences, or expressing ideas through writing, I love turning creative concepts into impactful realities.</p>
+        </div>
+        <div class="qualification-panel">
+          <div class="panel-heading">
+            <span class="line-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m2 10 10-5 10 5-10 5-10-5Zm4 2v5c3 2.5 9 2.5 12 0v-5m4-2v5"/></svg></span>
+            <h3>Qualifications</h3>
+          </div>
+          <ul class="qualifications" id="qualification-list"></ul>
+          <p class="row-detail" id="qualification-empty" hidden>Qualification details forthcoming.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section work-section" id="work" aria-labelledby="work-title">
+      <div class="shell">
+        <div class="section-head work-head">
+          <div>
+            <p class="eyebrow">Websites &amp; projects</p>
+            <h2 id="work-title">Selected work<span>.</span></h2>
+          </div>
+          <div class="filters" aria-label="Filter work" role="group">
+            <button type="button" data-filter="all" aria-pressed="true" aria-controls="project-list">All</button>
+            <button type="button" data-filter="web-design" aria-pressed="false" aria-controls="project-list">Web design</button>
+            <button type="button" data-filter="ai-tool" aria-pressed="false" aria-controls="project-list">AI tools</button>
+            <button type="button" data-filter="web-app" aria-pressed="false" aria-controls="project-list">Web apps</button>
+          </div>
+        </div>
+        <p class="sr-only" id="filter-status" role="status"></p>
+        <div id="project-list">
+          <div class="featured-grid" id="featured-list"></div>
+          <section class="more-work" id="other-work" aria-labelledby="more-work-title">
+            <h3 id="more-work-title">More work</h3>
+            <div class="project-grid" id="other-work-list"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section certificates-section" id="certificates" aria-labelledby="certificates-title">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Credentials</p>
+          <h2 id="certificates-title">Certifications<span>.</span></h2>
+        </div>
+        <div class="certificate-grid" id="certificate-list"></div>
+        <p class="section-description" id="certificate-empty" hidden>Certificates will be added here as they become available.</p>
+        <section class="achievements" id="achievements" aria-labelledby="achievements-title">
+          <h3 id="achievements-title">Achievements</h3>
+          <p class="row-detail">Sample entries based on projects in this portfolio.</p>
+          <ul class="achievement-grid" id="achievement-list"></ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="section contact-section" id="contact" aria-labelledby="contact-title">
+      <div class="shell contact-grid">
+        <div class="section-head">
+          <h2 id="contact-title">Let’s connect<span>.</span></h2>
+          <p class="section-description">Reach out about projects, internships, or collaborations.</p>
+        </div>
+        <div class="contact-options">
+          <div class="contact-direct">
+            <p class="contact-email" id="contact-email"></p>
+            <div class="contact-actions">
+              <a class="button button-primary" id="email-link">Email me</a>
+              <button class="button button-outline" id="copy-email" type="button" hidden>Copy email</button>
+              <a class="button button-outline" id="linkedin-link">LinkedIn</a>
+            </div>
+            <p class="contact-status" id="copy-email-status" role="status"></p>
+          </div>
+          <div class="contact-group">
+            <h3>Social profiles</h3>
+            <ul class="social-grid" id="social-list"></ul>
+          </div>
+          <div class="contact-group">
+            <h3>Share this portfolio</h3>
+            <a class="social-tile" id="whatsapp-share">Share on WhatsApp</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <a class="brand" href="#top"><img src="assets/mark.svg" width="29" height="29" alt=""><span data-name>Yohan Ahmad</span></a>
+      <a class="top-link" href="#top">Back to top</a>
+    </div>
+  </footer>
+
+  <dialog class="project-dialog" id="project-dialog" aria-labelledby="detail-title">
+    <div class="dialog-inner">
+      <form method="dialog" class="dialog-close"><button type="submit" aria-label="Close project" autofocus><span aria-hidden="true">×</span></button></form>
+      <img class="dialog-image" alt="">
+      <div class="dialog-copy">
+        <p class="eyebrow" id="detail-category"></p>
+        <h2 id="detail-title"></h2>
+        <p id="detail-description"></p>
+        <div class="dialog-actions">
+          <a class="button button-primary" id="detail-link" hidden>Live demo</a>
+          <a class="button button-outline" id="detail-repository" hidden>Source on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <template id="featured-template">
+    <article class="featured-card">
+      <a class="featured-image-link"><img class="featured-image" width="1000" height="676" alt="" loading="lazy" decoding="async"></a>
+      <div class="featured-copy">
+        <p class="eyebrow project-category"></p>
+        <h3 class="project-name"></h3>
+        <p class="project-summary"></p>
+        <ul class="project-stack" aria-label="Technologies"></ul>
+        <div class="featured-actions">
+          <a class="button button-primary case-link">View case study</a>
+          <a class="button button-outline live-link">Live demo</a>
+          <a class="button button-outline source-link">Source</a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <template id="project-template">
+    <article class="project-card">
+      <img class="project-image" width="1000" height="676" loading="lazy" decoding="async" alt="">
+      <div class="project-info">
+        <p class="project-category"></p>
+        <h3 class="project-name"></h3>
+        <p class="project-summary"></p>
+        <div class="project-actions">
+          <button class="button button-outline project-action" type="button" aria-haspopup="dialog" aria-controls="project-dialog">Details</button>
+          <a class="button button-outline live-link">Live demo</a>
+          <a class="button button-outline source-link">Source</a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <noscript><p class="shell noscript-message">Read the <a href="work/oxygen-salon/index.html">Oxygen Salon</a> and <a href="work/trailmind/index.html">Trailmind</a> case studies.</p></noscript>
+</body>
+</html>
