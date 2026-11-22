@@ -29,7 +29,7 @@ function textElement(tag, className, text) {
   return element;
 }
 
-const categoryLabels = { "web-design": "Web design", "ai-tool": "AI tool", "web-app": "Web app" };
+const categoryLabels = { "web-design": "Web design", "ai-tool": "AI tool", "web-app": "Web app", game: "Game" };
 const features = document.querySelector("#featured-list");
 const otherWork = document.querySelector("#other-work");
 const otherProjects = document.querySelector("#other-work-list");
@@ -45,53 +45,97 @@ function setOptionalLink(link, url) {
   else link.removeAttribute("href");
 }
 
+function portfolioTime(date) {
+  const time = textElement("time", "entry-date", formatPortfolioDate(date));
+  time.dateTime = date;
+  return time;
+}
+
+function renderProjectData(list, project) {
+  list.replaceChildren();
+  const fields = [
+    ["My role", project.role],
+    ["Project status", project.status],
+    [project.dateLabel, portfolioTime(project.date)],
+    ["Tools", project.stack.join(", ")],
+  ];
+  for (const [label, value] of fields) {
+    const row = document.createElement("div");
+    const detail = document.createElement("dd");
+    detail.append(value);
+    row.append(textElement("dt", "", label), detail);
+    list.append(row);
+  }
+}
+
+function entryLink(label, url, subject) {
+  const link = textElement("a", "entry-link", label);
+  link.href = url;
+  if (subject) link.setAttribute("aria-label", `${label}: ${subject}`);
+  return link;
+}
+
 const projectCards = profile.projects.map((project) => {
-  const featured = Boolean(project.caseStudy);
+  const featured = project.featured ?? Boolean(project.caseStudy);
   const template = featured ? featuredTemplate : cardTemplate;
   const card = template.content.firstElementChild.cloneNode(true);
   const image = card.querySelector("img");
+  const heading = card.querySelector(".project-name");
   const category = categoryLabels[project.category];
-  const label = project.status ? `${category} · ${project.status}` : category;
   image.src = project.image;
   image.alt = project.imageAlt;
-  card.querySelector(".project-category").textContent = label;
-  card.querySelector(".project-name").textContent = project.title;
+  card.querySelector(".project-category").textContent = category;
+  heading.textContent = project.title;
   card.querySelector(".project-summary").textContent = project.summary;
+  renderProjectData(card.querySelector(".project-data"), project);
 
   const liveLink = card.querySelector(".live-link");
   const sourceLink = card.querySelector(".source-link");
+  const liveLabel = project.category === "game" ? "Play game" : "Live demo";
+  liveLink.textContent = liveLabel;
   setOptionalLink(liveLink, project.url);
   setOptionalLink(sourceLink, project.repository);
-  liveLink.setAttribute("aria-label", `Open the live demo for ${project.title}`);
+  liveLink.setAttribute("aria-label", project.category === "game" ? `Play ${project.title}` : `Open the live demo for ${project.title}`);
   sourceLink.setAttribute("aria-label", `Source for ${project.title} on GitHub`);
 
-  if (featured) {
-    const url = `work/${project.caseStudy.slug}/index.html`;
-    const coverLink = card.querySelector(".featured-image-link");
-    const caseLink = card.querySelector(".case-link");
-    coverLink.href = url;
-    coverLink.setAttribute("aria-label", `${project.title} case study`);
-    caseLink.href = url;
-    caseLink.setAttribute("aria-label", `View case study for ${project.title}`);
-    const techList = card.querySelector(".project-stack");
-    for (const tech of project.stack) techList.append(textElement("li", "", tech));
-    features.append(card);
+  const caseUrl = project.caseStudy ? `work/${project.caseStudy.slug}/index.html` : "";
+  const caseLink = card.querySelector(".case-link");
+  const action = card.querySelector(".project-action");
+  setOptionalLink(caseLink, caseUrl);
+  caseLink.setAttribute("aria-label", `View case study for ${project.title}`);
+  action.hidden = Boolean(caseUrl);
+
+  if (caseUrl) {
+    card.id = `project-${project.caseStudy.slug}`;
+    card.tabIndex = -1;
+    heading.id = `${card.id}-title`;
+    card.setAttribute("aria-labelledby", heading.id);
   } else {
-    const action = card.querySelector(".project-action");
     action.setAttribute("aria-label", `View details for ${project.title}`);
     action.addEventListener("click", () => {
       const preview = dialog.querySelector(".dialog-image");
       preview.src = project.image;
       preview.alt = project.imageAlt;
-      dialog.querySelector("#detail-category").textContent = label;
+      dialog.querySelector("#detail-category").textContent = category;
       dialog.querySelector("#detail-title").textContent = project.title;
       dialog.querySelector("#detail-description").textContent = project.description;
+      renderProjectData(dialog.querySelector("#detail-data"), project);
+      detailLink.textContent = liveLabel;
       setOptionalLink(detailLink, project.url);
       setOptionalLink(repositoryLink, project.repository);
       dialog.showModal();
     });
-    otherProjects.append(card);
   }
+
+  if (featured) {
+    const coverLink = card.querySelector(".featured-image-link");
+    const coverUrl = caseUrl || project.url;
+    if (coverUrl) {
+      coverLink.href = coverUrl;
+      coverLink.setAttribute("aria-label", caseUrl ? `${project.title} case study` : `${project.title} live demo preview`);
+    }
+  }
+  (featured ? features : otherProjects).append(card);
   return { category: project.category, featured, element: card };
 });
 
@@ -116,6 +160,19 @@ for (const button of filters) {
   });
 }
 
+function focusLinkedProject() {
+  const card = projectCards.find(({ element }) => element.id && `#${element.id}` === location.hash)?.element;
+  if (!card) return;
+  if (card.hidden) document.querySelector('[data-filter="all"]').click();
+  card.focus({ preventScroll: true });
+  card.scrollIntoView({ block: "start", behavior: "instant" });
+}
+
+window.addEventListener("hashchange", focusLinkedProject);
+if (location.hash.startsWith("#project-")) {
+  window.addEventListener("load", focusLinkedProject, { once: true });
+}
+
 const qualificationList = document.querySelector("#qualification-list");
 document.querySelector("#qualification-empty").hidden = profile.qualifications.length > 0;
 for (const item of profile.qualifications) {
@@ -124,12 +181,20 @@ for (const item of profile.qualifications) {
   qualificationList.append(row);
 }
 
+const skillsList = document.querySelector("#skill-list");
+for (const skill of profile.skills) {
+  const row = document.createElement("li");
+  row.append(textElement("strong", "row-title", skill.label), entryLink(skill.evidence, skill.url));
+  skillsList.append(row);
+}
+
 const certificateList = document.querySelector("#certificate-list");
 certificateList.hidden = profile.certificates.length === 0;
 document.querySelector("#certificate-empty").hidden = profile.certificates.length > 0;
 for (const certificate of profile.certificates) {
   const card = document.createElement("article");
   card.className = "certificate-card";
+  if (certificate.id) card.id = certificate.id;
   const label = document.createElement("div");
   label.className = "certificate-details";
   label.append(textElement("h3", "row-title", certificate.title), textElement("p", "row-detail", certificate.detail));
@@ -142,6 +207,7 @@ for (const certificate of profile.certificates) {
   }
   if (certificate.image) {
     card.classList.add("certificate-card-with-image");
+    if (certificate.badge) card.classList.add("certificate-card-badge");
     const preview = document.createElement("a");
     preview.className = "certificate-preview";
     preview.href = certificate.image;
@@ -165,8 +231,26 @@ const achievementList = document.querySelector("#achievement-list");
 document.querySelector("#achievements").hidden = profile.achievements.length === 0;
 for (const achievement of profile.achievements) {
   const item = document.createElement("li");
-  item.append(textElement("h4", "row-title", achievement.title), textElement("p", "row-detail", achievement.detail));
+  if (achievement.date) item.append(portfolioTime(achievement.date));
+  item.append(
+    textElement("h4", "row-title", achievement.title),
+    textElement("p", "row-detail", achievement.detail),
+    entryLink(achievement.linkLabel, achievement.url, achievement.title),
+  );
   achievementList.append(item);
+}
+
+const writingList = document.querySelector("#writing-list");
+for (const entry of profile.writing) {
+  const article = document.createElement("article");
+  article.className = "writing-card";
+  article.append(
+    portfolioTime(entry.date),
+    textElement("h3", "", entry.title),
+    textElement("p", "row-detail", entry.summary),
+    entryLink(entry.linkLabel, entry.url, entry.title),
+  );
+  writingList.append(article);
 }
 
 const { email, linkedin, profiles, shareUrl } = profile.contact;
@@ -258,21 +342,22 @@ window.addEventListener("resize", scheduleActiveSection);
 updateActiveSection();
 
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const revealInset = 32;
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (entry.isIntersecting) reveal(entry.target);
     }
-  });
+  }, { rootMargin: `0px 0px -${revealInset}px 0px` });
 
   function reveal(element) {
     element.classList.remove("scroll-reveal-pending");
     observer.unobserve(element);
   }
 
-  const viewportBottom = document.documentElement.clientHeight;
+  const revealBoundary = document.documentElement.clientHeight - revealInset;
   const targets = document.querySelectorAll("main > .section, .featured-card, .project-card");
   for (const element of targets) {
-    if (element.getBoundingClientRect().top < viewportBottom) continue;
+    if (element.getBoundingClientRect().top < revealBoundary) continue;
     element.classList.add("scroll-reveal", "scroll-reveal-pending");
     element.addEventListener("focusin", () => reveal(element), { once: true });
     observer.observe(element);

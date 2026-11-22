@@ -5,21 +5,21 @@ const { runInNewContext } = require("node:vm");
 const root = resolve(process.argv[2] || "dist");
 const prefix = "../../";
 const base = "https://indigo-personal-portfolio.notyohan.chatgpt.site";
-const profile = runInNewContext(`${readFileSync(join(root, "content.js"), "utf8")}\nportfolioContent`);
+const { profile, formatDate } = runInNewContext(`${readFileSync(join(root, "content.js"), "utf8")}\n({ profile: portfolioContent, formatDate: formatPortfolioDate })`);
 const projects = profile.projects.filter((project) => project.caseStudy);
 const chars = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const escape = (value) => String(value).replace(/[&<>"']/g, (match) => chars[match]);
 
 function renderFigure(item, cover = false) {
   return `<figure class="${cover ? "case-cover" : "case-image"}">
-    <img src="${prefix}${escape(item.image)}" alt="${escape(item.alt)}" width="1000" height="676" ${cover ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+    <img src="${prefix}${escape(item.image)}" alt="${escape(item.alt)}" width="${item.width ?? 1000}" height="${item.height ?? 676}" ${cover ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
     <figcaption>${escape(item.caption)}</figcaption>
   </figure>`;
 }
 
 function renderVideo(video) {
   if (!video || !existsSync(join(root, video.source))) return "";
-  return `<figure class="case-video">
+  return `<figure class="case-video" id="case-walkthrough" tabindex="-1">
     <video controls playsinline preload="none" poster="${prefix}${escape(video.poster)}" width="1000" height="676" aria-label="${escape(video.caption)}">
       <source src="${prefix}${escape(video.source)}" type="video/mp4">
       <a href="${prefix}${escape(video.source)}">Download the sample walkthrough</a>
@@ -28,19 +28,25 @@ function renderVideo(video) {
   </figure>`;
 }
 
-for (const project of projects) {
+for (const [index, project] of projects.entries()) {
   const { caseStudy: detail } = project;
-  const next = projects.find((candidate) => candidate !== project);
+  const next = projects.length > 1 ? projects[(index + 1) % projects.length] : null;
   const title = escape(project.title);
   const name = escape(profile.name);
   const description = escape(detail.lead);
   const caseURL = `${base}/work/${escape(detail.slug)}/`;
   const directory = join(root, "work", detail.slug);
+  const video = renderVideo(detail.video);
   const links = [
     project.url && `<a class="button button-primary" href="${escape(project.url)}">Live demo</a>`,
     project.repository && `<a class="button button-outline" href="${escape(project.repository)}">Source on GitHub</a>`,
     detail.writeup && `<a class="button button-outline" href="${escape(detail.writeup)}">Read development notes</a>`,
+    detail.noteUrl && `<a class="button button-outline" href="${prefix}${escape(detail.noteUrl)}">Read the design note</a>`,
+    video && '<a class="button button-outline" href="#case-walkthrough">Watch the sample walkthrough</a>',
   ].filter(Boolean).join("\n          ");
+  const workflow = detail.workflow
+    ? `<ol class="case-workflow">${detail.workflow.map((step) => `<li>${escape(step)}</li>`).join("")}</ol>`
+    : "";
 
   mkdirSync(directory, { recursive: true });
   writeFileSync(join(directory, "index.html"), `<!doctype html>
@@ -64,7 +70,7 @@ for (const project of projects) {
   <header class="site-header">
     <div class="shell header-inner">
       <a class="brand" href="${prefix}index.html"><img src="${prefix}assets/mark.svg" alt="" width="35" height="35">${name}</a>
-      <a class="top-link case-back" href="${prefix}index.html#work">Back to work</a>
+      <a class="top-link case-back" href="${prefix}index.html#project-${escape(detail.slug)}">Back to work</a>
     </div>
   </header>
   <main id="main" tabindex="-1">
@@ -72,7 +78,7 @@ for (const project of projects) {
       <header class="case-intro">
         <div class="shell case-intro-grid">
           <div>
-            <p class="eyebrow">Case study · ${escape(project.status)}</p>
+            <p class="eyebrow">Case study</p>
             <h1>${title}</h1>
             <p class="case-lead">${description}</p>
             <div class="featured-actions">
@@ -80,9 +86,11 @@ for (const project of projects) {
             </div>
           </div>
           <dl class="case-meta">
-            <div><dt>Role</dt><dd>${escape(detail.role)}</dd></div>
-            <div><dt>Year</dt><dd>${escape(detail.period)}</dd></div>
-            <div><dt>Built with</dt><dd>${project.stack.map(escape).join(" · ")}</dd></div>
+            <div><dt>My role</dt><dd>${escape(project.role)}</dd></div>
+            <div><dt>What shipped</dt><dd>${escape(detail.shipped)}</dd></div>
+            <div><dt>Project status</dt><dd>${escape(project.status)}</dd></div>
+            <div><dt>${escape(project.dateLabel)}</dt><dd><time datetime="${escape(project.date)}">${escape(formatDate(project.date))}</time></dd></div>
+            <div><dt>Tools</dt><dd>${project.stack.map(escape).join(", ")}</dd></div>
           </dl>
         </div>
       </header>
@@ -91,12 +99,11 @@ for (const project of projects) {
         <section class="case-story" aria-label="Project story">
           <div><h2>The goal</h2><p>${escape(detail.goal)}</p></div>
           <div><h2>The approach</h2><p>${escape(detail.decision)}</p></div>
-          <div><h2>What shipped</h2><p>${escape(detail.result)}</p></div>
+          <div><h2>What to expect</h2><p>${escape(detail.result)}</p></div>
         </section>
         <section class="case-evidence" aria-labelledby="case-workflow">
-          <h2 id="case-workflow">The interface in use</h2>
-          <div class="case-media">${detail.media.map((item) => renderFigure(item)).join("\n")}</div>
-          ${renderVideo(detail.video)}
+          <h2 id="case-workflow">The interface in use</h2>${workflow ? `\n          ${workflow}` : ""}
+          <div class="case-media">${detail.media.map((item) => renderFigure(item)).join("\n")}</div>${video ? `\n          ${video}` : ""}
         </section>
         ${next ? `<section class="case-next" aria-labelledby="case-next-heading"><div><p class="eyebrow">Next case study</p><h2 id="case-next-heading">${escape(next.title)}</h2></div><a class="button button-outline" href="../${escape(next.caseStudy.slug)}/index.html">View case study</a></section>` : ""}
       </div>

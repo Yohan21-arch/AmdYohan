@@ -24,7 +24,9 @@
       <nav id="site-nav" class="site-nav" aria-label="Main navigation">
         <a href="#about">About</a>
         <a href="#work">Work</a>
+        <a href="#services">Services</a>
         <a href="#certificates">Certifications</a>
+        <a href="#writing">Writing</a>
         <a class="nav-contact" href="#contact">Contact</a>
       </nav>
     </div>
@@ -34,6 +36,7 @@
     <section class="hero" aria-labelledby="intro-title">
       <div class="shell hero-grid">
         <div class="hero-copy">
+          <p class="hero-availability"><span class="availability-dot" aria-hidden="true"></span>Open to internships and projects</p>
           <h1 id="intro-title">Hi, I’m <span data-name>Yohan Ahmad</span></h1>
           <p class="hero-description" data-intro>I’m a computer science student specializing in AI and machine learning. I build interactive websites and browser-based tools.</p>
           <div class="hero-actions">
@@ -78,6 +81,10 @@
           </div>
           <ul class="qualifications" id="qualification-list"></ul>
           <p class="row-detail" id="qualification-empty" hidden>Qualification details forthcoming.</p>
+          <section class="skills" id="skills" aria-labelledby="skills-title">
+            <h3 id="skills-title">Skills in practice</h3>
+            <ul class="skill-list" id="skill-list"></ul>
+          </section>
         </div>
       </div>
     </section>
@@ -94,6 +101,7 @@
             <button type="button" data-filter="web-design" aria-pressed="false" aria-controls="project-list">Web design</button>
             <button type="button" data-filter="ai-tool" aria-pressed="false" aria-controls="project-list">AI tools</button>
             <button type="button" data-filter="web-app" aria-pressed="false" aria-controls="project-list">Web apps</button>
+            <button type="button" data-filter="game" aria-pressed="false" aria-controls="project-list">Games</button>
           </div>
         </div>
         <p class="sr-only" id="filter-status" role="status"></p>
@@ -103,6 +111,47 @@
             <h3 id="more-work-title">More work</h3>
             <div class="project-grid" id="other-work-list"></div>
           </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-section" id="services" aria-labelledby="services-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="services-title">Services<span>.</span></h2>
+        </div>
+        <div class="services-grid">
+          <ul class="services-list">
+            <li>
+              <h3>Copywriting</h3>
+              <p>Copy for landing pages, product descriptions, and campaigns.</p>
+            </li>
+            <li>
+              <h3>Web development</h3>
+              <p>Frontend interfaces and backend functionality for websites and web apps.</p>
+            </li>
+            <li>
+              <h3>Video editing</h3>
+              <p>Cuts, pacing, and titles for short-form and longer videos.</p>
+            </li>
+            <li>
+              <h3>Photo editing</h3>
+              <p>Color correction, retouching, and image cleanup.</p>
+            </li>
+            <li>
+              <h3>Article writing</h3>
+              <p>Research, structure, and writing for articles and blog posts.</p>
+            </li>
+          </ul>
+          <div class="services-contact">
+            <figure class="services-quote">
+              <blockquote cite="https://classics.mit.edu/Aristotle/nicomachaen.2.ii.html">
+                <p>“For the things we have to learn before we can do them, we learn by doing them.”</p>
+              </blockquote>
+              <figcaption>Aristotle, <cite><a href="https://classics.mit.edu/Aristotle/nicomachaen.2.ii.html">Nicomachean Ethics, Book II</a></cite></figcaption>
+            </figure>
+            <a class="button button-primary" href="https://www.freelancer.in/u/Yohan2105">View my Freelancer profile</a>
+          </div>
         </div>
       </div>
     </section>
@@ -117,9 +166,17 @@
         <p class="section-description" id="certificate-empty" hidden>Certificates will be added here as they become available.</p>
         <section class="achievements" id="achievements" aria-labelledby="achievements-title">
           <h3 id="achievements-title">Achievements</h3>
-          <p class="row-detail">Sample entries based on projects in this portfolio.</p>
           <ul class="achievement-grid" id="achievement-list"></ul>
         </section>
+      </div>
+    </section>
+
+    <section class="section writing-section" id="writing" aria-labelledby="writing-title">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="writing-title">Writing<span>.</span></h2>
+        </div>
+        <div class="writing-grid" id="writing-list"></div>
       </div>
     </section>
 
@@ -167,6 +224,7 @@
         <p class="eyebrow" id="detail-category"></p>
         <h2 id="detail-title"></h2>
         <p id="detail-description"></p>
+        <dl class="project-data" id="detail-data"></dl>
         <div class="dialog-actions">
           <a class="button button-primary" id="detail-link" hidden>Live demo</a>
           <a class="button button-outline" id="detail-repository" hidden>Source on GitHub</a>
@@ -182,9 +240,10 @@
         <p class="eyebrow project-category"></p>
         <h3 class="project-name"></h3>
         <p class="project-summary"></p>
-        <ul class="project-stack" aria-label="Technologies"></ul>
+        <dl class="project-data"></dl>
         <div class="featured-actions">
           <a class="button button-primary case-link">View case study</a>
+          <button class="button button-primary project-action" type="button" aria-haspopup="dialog" aria-controls="project-dialog">Details</button>
           <a class="button button-outline live-link">Live demo</a>
           <a class="button button-outline source-link">Source</a>
         </div>
@@ -199,8 +258,10 @@
         <p class="project-category"></p>
         <h3 class="project-name"></h3>
         <p class="project-summary"></p>
+        <dl class="project-data"></dl>
         <div class="project-actions">
           <button class="button button-outline project-action" type="button" aria-haspopup="dialog" aria-controls="project-dialog">Details</button>
+          <a class="button button-outline case-link">View case study</a>
           <a class="button button-outline live-link">Live demo</a>
           <a class="button button-outline source-link">Source</a>
         </div>
@@ -208,6 +269,6 @@
     </article>
   </template>
 
-  <noscript><p class="shell noscript-message">Read the <a href="work/oxygen-salon/index.html">Oxygen Salon</a> and <a href="work/trailmind/index.html">Trailmind</a> case studies.</p></noscript>
+  <noscript><p class="shell noscript-message">Read the <a href="work/oxygen-salon/index.html">Oxygen Salon</a>, <a href="work/bhraman/index.html">Bhraman</a>, and <a href="work/trailmind/index.html">Trailmind</a> case studies or the <a href="writing/oxygen-salon-booking/index.html">Oxygen Salon design note</a>.</p></noscript>
 </body>
 </html>
