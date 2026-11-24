@@ -1,0 +1,47 @@
+.project-image-frame { overflow: hidden; border-radius: .75rem .75rem 0 0; }
+.project-card:hover, .featured-image-link:hover .featured-image { transform: none; }
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .project-motion :is(.project-card, .featured-card) {
+    transition: transform var(--motion-ui) var(--motion-ease), border-color var(--motion-ui) ease;
+  }
+  .project-motion [data-tilting] {
+    transform: perspective(1400px) translateY(-2px) rotateX(var(--pitch)) rotateY(var(--yaw));
+    border-color: var(--line-strong);
+  }
+  .project-motion :is(.featured-image, .project-image) { transition: transform 600ms var(--motion-ease); }
+  .project-motion [data-tilting] :is(.featured-image, .project-image) { transform: scale(1.045); }
+}
+@media (pointer: coarse) {
+  :is(.project-card, .featured-card):active { border-color: var(--line-strong); }
+}
+
+.motion-paused .scroll-reveal-pending::after { opacity: 0; transition: none; }
+.motion-paused .portfolio-main > .section.scroll-reveal-pending { transform: none; transition: none; }
+.motion-paused { scroll-behavior: auto; }
+
+::view-transition { pointer-events: none; }
+::view-transition-group(*) { animation-duration: 520ms; animation-timing-function: var(--motion-ease); }
+::view-transition-old(project-cover), ::view-transition-new(project-cover) {
+  height: 100%; object-fit: cover; object-position: center top;
+}
+
+/* Section interactions share the hero timing tokens and the global pause state. */
+@media (prefers-reduced-motion: no-preference) {
+  .project-motion :is(.services-list li, .skill-list li, .certificate-card, .writing-card, #contact .button, #contact .social-tile) {
+    transition: transform var(--motion-ui) var(--motion-ease), box-shadow var(--motion-ui) ease,
+      background-color 160ms ease, border-color 160ms ease;
+  }
+  .project-motion #contact .line-icon { transition: transform var(--motion-ui) var(--motion-ease); }
+  .project-motion #contact :is(.button, .social-tile):focus-visible { transform: translateY(-2px); }
+  .project-motion .contact-status:not(:empty) { animation: copy-feedback 230ms var(--motion-ease); }
+  @keyframes copy-feedback { from { opacity: .35; transform: translateY(3px); } }
+  @media (hover: hover) and (pointer: fine) {
+    .project-motion :is(.services-list li, .certificate-card, .writing-card):hover {
+      transform: translateY(-4px);
+      box-shadow: 0 5px 12px var(--background);
+    }
+    .project-motion :is(.skill-list li, #contact .button, #contact .social-tile):hover { transform: translateY(-2px); }
+    .project-motion #contact :is(.button, .social-tile):hover .line-icon { transform: translateX(2px); }
+  }
+}

@@ -2,6 +2,9 @@
 
 :root {
   color-scheme: dark;
+  --motion-ease: cubic-bezier(.22, 1, .36, 1);
+  --motion-text: 700ms;
+  --motion-ui: 220ms;
   --background: #0D0D0F;
   --surface: #18181C;
   --surface-raised: #242428;
@@ -425,14 +428,50 @@ body:has(.project-dialog[open]) { overflow: hidden; }
     70%, 100% { transform: scale(2.15); opacity: 0; }
   }
 
-  .hero-visual[data-card-motion] .developer-stage { animation: developer-orbit 14s ease-in-out infinite paused; }
+  .hero-visual[data-card-motion] .developer-stage {
+    animation: developer-orbit 14s ease-in-out infinite paused, panel-float 9s ease-in-out infinite paused;
+  }
   .hero-visual[data-card-motion='running'] .developer-stage { animation-play-state: running; }
 
+  /* The float uses the independent translate property, leaving transform for rotation. */
   @keyframes developer-orbit {
     0%, 100% { transform: translateY(-.18rem) rotateX(8deg) rotateY(-13deg) rotateZ(-7deg); }
-    25% { transform: translateY(-.55rem) rotateX(15deg) rotateY(-2deg) rotateZ(-4deg); }
-    50% { transform: translateY(-.06rem) rotateX(5deg) rotateY(14deg) rotateZ(-5deg); }
-    75% { transform: translateY(.32rem) rotateX(-5deg) rotateY(1deg) rotateZ(-9deg); }
+    25% { transform: translateY(-.18rem) rotateX(15deg) rotateY(-2deg) rotateZ(-4deg); }
+    50% { transform: translateY(-.18rem) rotateX(5deg) rotateY(14deg) rotateZ(-5deg); }
+    75% { transform: translateY(-.18rem) rotateX(-5deg) rotateY(1deg) rotateZ(-9deg); }
+  }
+
+  @keyframes panel-float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+
+  @media (min-width: 48.01rem) and (hover: hover) and (pointer: fine) {
+    .hero-visual[data-orbit] .developer-scene::after { animation: ambient-orbit 32s linear infinite paused; }
+    .hero-visual[data-orbit][data-card-motion='running'] .developer-scene::after { animation-play-state: running; }
+    @keyframes ambient-orbit { to { transform: rotate(336deg); } }
+  }
+
+  .hero-intro .hero-line { overflow: hidden; }
+  .hero-intro .hero-line > span { animation: heading-rise var(--motion-text) var(--motion-ease) 90ms backwards; }
+  .hero-intro .hero-line + .hero-line > span { animation-delay: 215ms; }
+  @keyframes heading-rise { from { transform: translateY(102%); } }
+
+  .hero-intro :is(.header-inner, .hero-description, .hero-actions .button, .developer-scene) {
+    animation: hero-arrive var(--motion-text) var(--motion-ease) var(--arrival-delay, 0ms) backwards;
+  }
+  .hero-intro .header-inner { --arrival-y: -6px; --arrival-opacity: .7; animation-duration: 320ms; }
+  .hero-intro .hero-description { --arrival-delay: 420ms; --arrival-y: 12px; }
+  .hero-intro .hero-actions .button { --arrival-delay: 560ms; --arrival-y: 8px; }
+  .hero-intro .hero-actions .button + .button { --arrival-delay: 670ms; }
+  .hero-intro .developer-scene { --arrival-delay: 780ms; --arrival-y: 30px; }
+  @keyframes hero-arrive {
+    from { opacity: var(--arrival-opacity, .15); transform: translateY(var(--arrival-y)); }
+  }
+  .hero-intro .header-inner:focus-within, .hero-intro .hero-actions .button:focus { animation: none; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-actions .button {
+      translate: var(--pull-x, 0px) var(--pull-y, 0px);
+      transition: translate var(--motion-ui) var(--motion-ease), background-color 160ms ease, border-color 160ms ease;
+    }
   }
 
   .scroll-reveal { position: relative; isolation: isolate; --reveal-strength: 1; }

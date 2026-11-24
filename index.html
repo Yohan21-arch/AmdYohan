@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <style>@view-transition { navigation: auto; } @media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }</style>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0D0D0F">
   <meta name="description" content="Yohan Ahmad builds interactive websites and practical web tools. Explore the Oxygen Salon and Trailmind case studies and more selected work.">
@@ -11,11 +12,72 @@
   <title>Yohan Ahmad | Portfolio</title>
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="project-motion.css">
+  <link rel="stylesheet" href="welcome.css">
   <script src="content.js" defer></script>
   <script src="portfolio.js" defer></script>
+  <script src="project-motion.js" defer></script>
   <script src="hero-card.js" defer></script>
 </head>
 <body id="top">
+  <dialog class="welcome-screen" aria-labelledby="welcome-title">
+    <div class="welcome-images" aria-hidden="true"></div>
+    <template class="welcome-slides">
+      <img alt="" src="assets/welcome-bhraman.webp">
+      <img alt="" src="assets/welcome-scientific-paper-certificate.webp">
+      <img alt="" src="assets/welcome-after-hours-boxing-club.webp">
+    </template>
+    <div class="welcome-content">
+      <p id="welcome-title">WELCOME!</p>
+      <div class="welcome-track" aria-hidden="true"><div class="welcome-fill"></div></div>
+    </div>
+    <button class="welcome-skip" type="button" autofocus>Skip intro</button>
+  </dialog>
+  <script>
+    (() => {
+      // Open while parsing the dialog, before the browser reaches the homepage.
+      const screen = document.querySelector(".welcome-screen");
+      const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      if (typeof screen?.showModal !== "function" || reducedMotion.matches || location.hash ||
+          performance.getEntriesByType("navigation")[0]?.type === "back_forward" ||
+          !getComputedStyle(screen).getPropertyValue("--welcome-duration")) return;
+
+      try {
+        if (sessionStorage.getItem("portfolio-motion-paused") === "true") return;
+      } catch {}
+
+      const images = screen.querySelector(".welcome-images");
+      const slides = screen.querySelector(".welcome-slides");
+      const bar = screen.querySelector(".welcome-fill");
+      let fallback;
+
+      function finish() {
+        if (!screen.open) return;
+        screen.close();
+        screen.dispatchEvent(new Event("welcome-finished"));
+      }
+
+      screen.querySelector(".welcome-skip").addEventListener("click", finish);
+      bar.addEventListener("animationend", finish, { once: true });
+      reducedMotion.addEventListener("change", finish);
+      window.addEventListener("pagehide", finish);
+      screen.addEventListener("cancel", event => {
+        event.preventDefault();
+        finish();
+      });
+      screen.addEventListener("close", () => {
+        clearTimeout(fallback);
+        images.replaceChildren();
+        reducedMotion.removeEventListener("change", finish);
+        window.removeEventListener("pagehide", finish);
+      }, { once: true });
+
+      screen.showModal();
+      // Release the page even when styles or the animationend event are unavailable.
+      fallback = setTimeout(finish, 4150);
+      images.append(slides.content.cloneNode(true));
+    })();
+  </script>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="shell header-inner">
@@ -37,7 +99,7 @@
       <div class="shell hero-grid">
         <div class="hero-copy">
           <p class="hero-availability"><span class="availability-dot" aria-hidden="true"></span>Open to internships and projects</p>
-          <h1 id="intro-title">Hi, I’m <span data-name>Yohan Ahmad</span></h1>
+          <h1 id="intro-title"><span class="hero-line"><span>Hi, I’m</span></span> <span class="hero-line"><span data-name>Yohan Ahmad</span></span></h1>
           <p class="hero-description" data-intro>I’m a computer science student specializing in AI and machine learning. I build interactive websites and browser-based tools.</p>
           <div class="hero-actions">
             <a class="button button-primary" href="#work">Explore my work</a>
@@ -106,6 +168,12 @@
         </div>
         <p class="sr-only" id="filter-status" role="status"></p>
         <div id="project-list">
+          <noscript id="work-fallback"><article><h3><a class="entry-link" href="work/oxygen-salon/index.html">Oxygen Salon</a></h3><p>An editorial website for a beauty and makeover studio.</p></article>
+<article><h3><a class="entry-link" href="https://after-hours-boxing-club.notyohan.chatgpt.site/">After Hours Boxing Club</a></h3><p>A browser boxing game with a perspective ring, a practice mode, and a three-opponent ladder.</p></article>
+<article><h3><a class="entry-link" href="work/bhraman/index.html">Bhraman</a></h3><p>An interactive guide to India’s destinations and hidden gems.</p></article>
+<article><h3><a class="entry-link" href="work/trailmind/index.html">Trailmind</a></h3><p>A browser-based AI planner for short outdoor activities.</p></article>
+<article><h3><a class="entry-link" href="https://yohan21-arch.github.io/Briefcraft/">Briefcraft</a></h3><p>A freelance proposal tool powered by local AI.</p></article>
+<article><h3><a class="entry-link" href="https://sentinelbrand-virid.vercel.app/">Mirage</a></h3><p>A digital risk protection dashboard prototype.</p></article></noscript>
           <div class="featured-grid" id="featured-list"></div>
           <section class="more-work" id="other-work" aria-labelledby="more-work-title">
             <h3 id="more-work-title">More work</h3>
@@ -253,7 +321,7 @@
 
   <template id="project-template">
     <article class="project-card">
-      <img class="project-image" width="1000" height="676" loading="lazy" decoding="async" alt="">
+      <div class="project-image-frame"><img class="project-image" width="1000" height="676" loading="lazy" decoding="async" alt=""></div>
       <div class="project-info">
         <p class="project-category"></p>
         <h3 class="project-name"></h3>

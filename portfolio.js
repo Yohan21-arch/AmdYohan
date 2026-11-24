@@ -355,11 +355,26 @@ if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-mot
   }
 
   const revealBoundary = document.documentElement.clientHeight - revealInset;
-  const targets = document.querySelectorAll("main > .section, .featured-card, .project-card");
+  // Phase 3 reveals individual headings and rows. Moving their section as
+  // well gives already visible text a second entrance at a different threshold.
+  const targets = document.querySelectorAll("main > .work-section");
   for (const element of targets) {
     if (element.getBoundingClientRect().top < revealBoundary) continue;
     element.classList.add("scroll-reveal", "scroll-reveal-pending");
     element.addEventListener("focusin", () => reveal(element), { once: true });
     observer.observe(element);
   }
+  // Settle pending panels permanently when motion is switched off, including
+  // a pause restored from this tab's previous page.
+  const settlePanels = () => targets.forEach(reveal);
+  if (document.documentElement.classList.contains("motion-paused")) settlePanels();
+  try {
+    if (sessionStorage.getItem("portfolio-motion-paused") === "true") settlePanels();
+  } catch {}
+  window.addEventListener("portfolio-motion", event => {
+    if (event.detail.paused) settlePanels();
+  });
+  window.matchMedia("(prefers-reduced-motion: reduce)").addEventListener("change", event => {
+    if (event.matches) settlePanels();
+  });
 }
