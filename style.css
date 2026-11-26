@@ -227,6 +227,26 @@ h1 span { display: block; overflow-wrap: anywhere; }
 .about-grid { grid-template-columns: minmax(0, 1.42fr) minmax(0, .83fr); align-items: start; }
 .about-copy .section-description { max-width: 43rem; }
 .about-copy .section-description + .section-description { margin-top: .85rem; }
+.about-aside { display: grid; gap: 1.6rem; }
+.about-portrait {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 15rem);
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: .8rem;
+  background: var(--surface-raised);
+}
+.about-portrait img {
+  position: absolute;
+  top: -2.5%;
+  left: 50%;
+  width: 145%;
+  max-width: none;
+  height: auto;
+  transform: translateX(-50%);
+}
 .qualification-panel { padding: 1.55rem 1.65rem; background: var(--surface-raised); border: 1px solid var(--line); border-radius: .8rem; }
 .panel-heading { display: flex; align-items: center; gap: .85rem; }
 .panel-heading h3 { font-size: 1.4rem; letter-spacing: -.035em; }
@@ -290,10 +310,11 @@ h1 span { display: block; overflow-wrap: anywhere; }
 .services-list h3 { font-size: 1.14rem; letter-spacing: -.025em; }
 .services-list p { margin-top: .18rem; color: var(--muted); font-size: .94rem; }
 .services-contact { display: grid; justify-items: start; gap: 1.15rem; }
-.services-quote { margin: 0; padding-inline-start: 1rem; border-inline-start: 1px solid var(--line-strong); }
-.services-quote blockquote { margin: 0; font: 400 clamp(1.32rem, 2.6vw, 2.08rem)/1.3 Georgia, serif; }
-.services-quote figcaption { margin-top: .65rem; color: var(--muted); font-size: .87rem; }
-.services-quote cite a { text-decoration: underline; text-underline-offset: .2em; }
+.portfolio-quote { margin: 0; padding-inline-start: 1rem; border-inline-start: 1px solid var(--line-strong); }
+.about-copy .portfolio-quote { margin-block-start: 1.5rem; }
+.portfolio-quote blockquote { margin: 0; font: 400 clamp(1.32rem, 2.6vw, 2.08rem)/1.3 Georgia, serif; }
+.portfolio-quote figcaption { margin-top: .65rem; color: var(--muted); font-size: .87rem; }
+.portfolio-quote cite a { text-decoration: underline; text-underline-offset: .2em; }
 
 .contact-grid { align-items: start; }
 .contact-options { display: grid; gap: 1.15rem; min-width: 0; }
