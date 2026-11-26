@@ -9,6 +9,8 @@
     transform: perspective(1400px) translateY(-2px) rotateX(var(--pitch)) rotateY(var(--yaw));
     border-color: var(--line-strong);
   }
+  .project-motion .about-portrait img { transition: scale 480ms var(--motion-ease); }
+  .project-motion .about-portrait:hover img { scale: 1.025; }
   .project-motion :is(.featured-image, .project-image) { transition: transform 600ms var(--motion-ease); }
   .project-motion [data-tilting] :is(.featured-image, .project-image) { transform: scale(1.045); }
 }

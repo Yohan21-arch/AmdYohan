@@ -245,7 +245,7 @@ h1 span { display: block; overflow-wrap: anywhere; }
   width: 145%;
   max-width: none;
   height: auto;
-  transform: translateX(-50%);
+  translate: -50% 0;
 }
 .qualification-panel { padding: 1.55rem 1.65rem; background: var(--surface-raised); border: 1px solid var(--line); border-radius: .8rem; }
 .panel-heading { display: flex; align-items: center; gap: .85rem; }

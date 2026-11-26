@@ -15,6 +15,7 @@
   }
   register("#about-title, #services-title, #certificates-title, #writing-title, #contact-title");
   register(".about-copy .section-description", 120);
+  register(".about-portrait, .portfolio-quote", 0);
   register(".qualification-panel .panel-heading, .qualifications li, #qualification-empty");
   register("#skills-title, .skill-list li", 65);
   register(".services-list li", 95, 0, 30);
@@ -49,7 +50,20 @@
     if (element.matches(":focus-within, :target")) return;
     const story = sectionMotion.get(element);
     if (story) {
-      if (element.matches("h2")) {
+      if (element.matches(".about-portrait")) {
+        const image = element.querySelector("img");
+        animate(element, { clipPath: "inset(0 0 100% 0)", translate: "0 24px" },
+          { clipPath: "inset(0)", translate: "0 0" }, 920);
+        animate(image, { opacity: 0, transform: "scale(1.05)" },
+          { opacity: 1, transform: "scale(1)" }, 860, 60);
+      } else if (element.matches(".portfolio-quote")) {
+        const quoteDelay = element.closest(".about-copy") ? 240 : 0;
+        // The outer mask draws in the existing border without changing its style.
+        animate(element, { clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0)" }, 540, quoteDelay);
+        animate(element.querySelector("blockquote"), { clipPath: "inset(0 0 100% 0)", translate: "0 18px" },
+          { clipPath: "inset(0)", translate: "0 0" }, 760, quoteDelay + 40);
+        rise(element.querySelector("figcaption"), 16, 650, quoteDelay + 165);
+      } else if (element.matches("h2")) {
         animate(element, { clipPath: "inset(0 0 100% 0)", translate: "0 16px" },
           { clipPath: "inset(0)", translate: "0 0" }, 780);
       } else {
